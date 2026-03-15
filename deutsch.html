@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="de">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Deutsch Akademie</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#f5f5f4;color:#1a1a1a;min-height:100vh}
+#app{max-width:740px;margin:0 auto;padding:1.5rem 1rem}
+.card{background:#fff;border:1px solid #e5e5e3;border-radius:12px;padding:1.25rem;margin-bottom:12px}
+h1{font-size:20px;font-weight:700;margin-bottom:4px}h3{font-size:15px;font-weight:600;margin-bottom:8px}
+.sub{font-size:13px;color:#6b6b6b;line-height:1.6;margin-bottom:12px}
+label{font-size:13px;color:#6b6b6b;display:block;margin-bottom:4px}
+input,select,textarea{width:100%;padding:9px 12px;border:1px solid #d1d1ce;border-radius:8px;font-size:14px;font-family:inherit;background:#fff;color:#1a1a1a;margin-bottom:10px}
+textarea{resize:none;margin:0}
+input:focus,select:focus,textarea:focus{outline:2px solid #2b2b2b;outline-offset:-1px}
+.btn{cursor:pointer;font-family:inherit;font-size:14px;border-radius:8px;padding:9px 18px;border:1px solid #d1d1ce;background:#fff;color:#1a1a1a}
+.btn:hover{background:#f5f5f4}.btn:active{transform:scale(.98)}
+.ac{background:#2b2b2b;color:#fff;border-color:#2b2b2b}.ac:hover{background:#444}
+.sm{padding:6px 12px;font-size:13px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.pb{background:#e5e5e3;border-radius:20px;height:10px}
+.pf{height:10px;border-radius:20px;background:#2b2b2b;transition:width .5s}
+.sg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.st{background:#f5f5f4;border-radius:8px;padding:10px;text-align:center}
+.sv{font-size:18px;font-weight:700}.sl{font-size:10px;color:#6b6b6b;margin-top:2px}
+#msgs{background:#f5f5f4;border-radius:10px;min-height:300px;max-height:420px;overflow-y:auto;padding:1rem;display:flex;flex-direction:column;gap:10px}
+.msg{display:flex;flex-direction:column;gap:4px;max-width:88%}
+.msg.u{align-self:flex-end;align-items:flex-end}.msg.a{align-self:flex-start}
+.bub{padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.6;white-space:pre-wrap;word-break:break-word;user-select:text}
+.u .bub{background:#2b2b2b;color:#fff;border-bottom-right-radius:4px}
+.a .bub{background:#fff;border:1px solid #e5e5e3;border-bottom-left-radius:4px}
+.cb{background:#FEF3C7;border:1px solid #F59E0B;border-radius:8px;padding:8px 12px;font-size:13px;color:#78350F;white-space:pre-wrap;margin-top:4px}
+.eb{background:#FEE2E2;border:1px solid #FCA5A5;border-radius:8px;padding:10px 14px;font-size:13px;color:#991B1B;margin-top:8px;line-height:1.6}
+.recap{background:#EAF3DE;border:1px solid #97C459;border-radius:8px;padding:12px 16px;font-size:13px;color:#27500A;line-height:1.8;margin-top:8px}
+.lbl{font-size:11px;color:#9b9b9b;padding:0 4px}
+.sep{border:none;border-top:1px solid #e5e5e3;margin:10px 0}
+.tabs{display:flex;gap:4px;margin-bottom:10px}
+.tab{padding:7px 14px;font-size:13px;border-radius:8px;border:1px solid #e5e5e3;cursor:pointer;background:#fff;color:#6b6b6b;font-family:inherit}
+.tab.on{color:#1a1a1a;border-color:#9b9b9b;font-weight:600}
+.vg{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:8px}
+.vc{background:#f5f5f4;border:1px solid #e5e5e3;border-radius:8px;padding:10px;cursor:pointer}
+.vc:hover{border-color:#9b9b9b}.vc.used{background:#F0FDF4;border-color:#86EFAC}.vc.used .vw{color:#166534}.vc.open{border-color:#2b2b2b}
+.vw{font-size:14px;font-weight:600;margin-bottom:2px}.vf{font-size:12px;color:#6b6b6b;font-style:italic}
+.vd{display:none;margin-top:8px;padding-top:8px;border-top:1px solid #e5e5e3;font-size:12px;color:#6b6b6b;line-height:1.5}
+.vc.open .vd{display:block}.vd em{color:#444;font-style:normal;font-weight:600}
+.ub{display:inline-block;font-size:11px;background:#DCFCE7;color:#166534;border-radius:20px;padding:2px 8px;margin-top:5px}
+.day-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin:0 2px}
+.day-done{background:#2b2b2b}.day-miss{background:#e5e5e3}
+.re{border-left:3px solid #F59E0B;padding:8px 12px;margin-bottom:10px;background:#f5f5f4;border-radius:0 8px 8px 0}
+.tl{font-size:13px;line-height:1.7;padding:6px 0;border-bottom:1px solid #e5e5e3}
+.dot{width:6px;height:6px;border-radius:50%;background:#9b9b9b;display:inline-block;animation:bk 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}.dot:nth-child(3){animation-delay:.4s}
+@keyframes bk{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.ir{display:flex;gap:8px;align-items:flex-end}#inp{flex:1;min-height:44px;max-height:100px}
+.sts{font-size:13px;color:#6b6b6b;min-height:20px;padding:4px 0}
+.saved{font-size:12px;color:#166534;background:#DCFCE7;border-radius:6px;padding:3px 10px;display:inline-block;margin-bottom:8px}
+#tooltip{position:fixed;background:#1a1a1a;color:#fff;padding:8px 14px;border-radius:10px;font-size:13px;pointer-events:none;display:none;z-index:9999;max-width:240px;text-align:center;line-height:1.6;border:1px solid #333}
+</style></head><body><div id="app">
+<div id="sc" class="card">
+<h1>🇩🇪 Deutsch Akademie</h1>
+<p class="sub" style="margin-top:4px">Propulsé par Groq + Llama 3 (100% gratuit). Double-clic sur un mot pour sa traduction.</p>
+<div id="ksm"></div>
+<label>Groq API key (console.groq.com → API Keys)</label>
+<input type="password" id="ki" placeholder="gsk_..." autocomplete="off">
+<label>Difficulté vocabulaire</label>
+<select id="ds">
+<option value="A1">A1 — Débutant</option>
+<option value="A2" selected>A2 — Élémentaire</option>
+<option value="B1">B1 — Intermédiaire</option>
+<option value="B2">B2 — Upper-intermédiaire</option>
+<option value="C1">C1 — Avancé</option>
+</select>
+<div class="row"><button class="btn ac" onclick="startApp()">Démarrer</button><button class="btn sm" onclick="clearKey()" id="clrbtn" style="display:none">Changer de clé</button></div>
+<div id="errbox"></div></div>
+<div id="mn" style="display:none">
+<div class="card">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:13px;font-weight:600" id="ll">Level: A2</span><span style="font-size:12px;color:#6b6b6b" id="week-lbl">Semaine 1</span></div>
+<div class="pb"><div class="pf" id="pf" style="width:20%"></div></div>
+<div style="margin-top:8px;display:flex;align-items:center;gap:6px"><span style="font-size:12px;color:#6b6b6b">Cette semaine :</span><div id="day-dots"></div><span style="font-size:12px;color:#6b6b6b" id="day-count">0/7 jours</span></div>
+<div class="sg"><div class="st"><div class="sv" id="sw">0</div><div class="sl">mots utilisés</div></div><div class="st"><div class="sv" id="sm">0</div><div class="sl">messages</div></div><div class="st"><div class="sv" id="se">0</div><div class="sl">corrections</div></div><div class="st"><div class="sv" id="streak">0</div><div class="sl">jours consécutifs</div></div></div></div>
+<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span style="font-size:13px;font-weight:600">10 mots du jour</span><span id="vc" style="font-size:12px;color:#6b6b6b">0/10 — double-clic sur un mot du chat pour le traduire</span></div><div class="vg" id="vg"></div></div>
+<div id="recap-banner" style="display:none"></div>
+<div class="tabs"><button class="tab on" onclick="swTab('chat',this)">Chat</button><button class="tab" onclick="swTab('rep',this)">Corrections</button><button class="tab" onclick="swTab('tr',this)">Transcript</button><button class="tab" onclick="swTab('recap',this)">Récap semaine</button></div>
+<div class="card" id="cp"><div id="msgs"></div><p class="sts" id="sts"></p><div id="apierr"></div><hr class="sep"><div class="ir"><button class="btn sm" id="mb" onclick="togMic()">&#127897; Parler</button><textarea id="inp" placeholder="Tape ou parle..." onkeydown="hk(event)" rows="2"></textarea><button class="btn ac sm" onclick="send()">Envoyer</button></div><div class="row" style="margin-top:8px;justify-content:space-between"><div class="row"><button class="btn sm" onclick="togSpeak()" id="spb">&#128266; Voix: on</button><button class="btn sm" onclick="saveAll()">&#128190; Sauver</button><button class="btn sm" onclick="loadAll()">&#128194; Charger</button></div><button class="btn sm" onclick="newDay()">Nouvelle session</button></div></div>
+<div class="card" id="rp" style="display:none"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3>Corrections</h3><button class="btn sm" onclick="dlRep()">Download .txt</button></div><p class="sub" id="re">Aucune correction pour l'instant.</p><div id="rl"></div></div>
+<div class="card" id="tp" style="display:none"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3>Transcript complet</h3><button class="btn sm" onclick="dlTr()">Download .txt</button></div><p class="sub" id="te">Aucun message pour l'instant.</p><div id="tl"></div></div>
+<div class="card" id="wkp" style="display:none"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3>Récap hebdomadaire</h3><button class="btn sm" onclick="dlRecap()">Download .txt</button></div><p class="sub" id="wke">Aucun récap disponible. Utilise l'app 7 jours pour générer ton premier récap !</p><div id="wkl"></div></div>
+</div>
+<div id="tooltip"></div>
+</div>
+<script>
+var ak="",df="A2",hs=[],spk=true,uw=new Set(),tm=0,rc=null,ir=false,cl="A2",cx=[],tr=[],tw=[];
+var recaps=[],weekDays=[],weekNum=1,todayLogged=false;
+var LV=["A1","A2","B1","B2","C1","C2"],LP={A1:5,A2:20,B1:35,B2:55,C1:75,C2:95};
+var SK="aria_de",GK="aria_groq_key_de";
+var VB={
+A1:[{w:"hallo",f:"bonjour / salut",e:"<em>Hallo</em>! Wie geht es dir?"},{w:"danke",f:"merci",e:"<em>Danke</em> schön für Ihre Hilfe."},{w:"bitte",f:"s'il vous plaît / de rien",e:"<em>Bitte</em> helfen Sie mir."},{w:"ja",f:"oui",e:"<em>Ja</em>, das stimmt."},{w:"nein",f:"non",e:"<em>Nein</em>, das ist falsch."},{w:"gut",f:"bien / bon",e:"Es geht mir <em>gut</em>."},{w:"sprechen",f:"parler",e:"Ich kann ein bisschen Deutsch <em>sprechen</em>."},{w:"verstehen",f:"comprendre",e:"Ich <em>verstehe</em> nicht."},{w:"kommen",f:"venir",e:"Ich <em>komme</em> aus Frankreich."},{w:"gehen",f:"aller",e:"Wohin <em>gehst</em> du?"}],
+A2:[{w:"jedoch",f:"cependant / toutefois",e:"Das Essen war gut, <em>jedoch</em> etwas teuer."},{w:"deshalb",f:"c'est pourquoi / donc",e:"Es regnet, <em>deshalb</em> bleibe ich zu Hause."},{w:"obwohl",f:"bien que / même si",e:"<em>Obwohl</em> er müde war, arbeitete er weiter."},{w:"erklären",f:"expliquer",e:"Können Sie das bitte <em>erklären</em>?"},{w:"verbessern",f:"améliorer",e:"Ich möchte mein Deutsch <em>verbessern</em>."},{w:"meinen",f:"penser / vouloir dire",e:"Was <em>meinen</em> Sie damit?"},{w:"beschreiben",f:"décrire",e:"Können Sie das Bild <em>beschreiben</em>?"},{w:"entwickeln",f:"développer",e:"Wir müssen eine Strategie <em>entwickeln</em>."},{w:"erreichen",f:"atteindre / accomplir",e:"Er hat sein Ziel <em>erreicht</em>."},{w:"vorschlagen",f:"proposer / suggérer",e:"Ich möchte etwas <em>vorschlagen</em>."}],
+B1:[{w:"dennoch",f:"néanmoins / quand même",e:"Es war schwierig, <em>dennoch</em> haben sie es geschafft."},{w:"außerdem",f:"de plus / en outre",e:"Er ist klug, <em>außerdem</em> ist er sehr fleißig."},{w:"ausführen",f:"exécuter / développer",e:"Könnten Sie das weiter <em>ausführen</em>?"},{w:"behaupten",f:"prétendre / affirmer",e:"Er <em>behauptet</em>, die Wahrheit zu sagen."},{w:"beweisen",f:"prouver / démontrer",e:"Kannst du das <em>beweisen</em>?"},{w:"einschätzen",f:"évaluer / estimer",e:"Wie <em>schätzen</em> Sie die Situation <em>ein</em>?"},{w:"begründen",f:"justifier / motiver",e:"Können Sie Ihre Entscheidung <em>begründen</em>?"},{w:"beurteilen",f:"juger / apprécier",e:"Es ist schwer, das objektiv zu <em>beurteilen</em>."},{w:"vermuten",f:"supposer / soupçonner",e:"Ich <em>vermute</em>, dass er Recht hat."},{w:"umfassend",f:"complet / exhaustif",e:"Er gab eine <em>umfassende</em> Antwort."}],
+B2:[{w:"nichtsdestotrotz",f:"néanmoins / malgré tout",e:"<em>Nichtsdestotrotz</em> haben wir unser Ziel erreicht."},{w:"nachvollziehen",f:"comprendre / suivre le raisonnement",e:"Ich kann Ihre Argumentation <em>nachvollziehen</em>."},{w:"prägnant",f:"précis / incisif",e:"Er drückt sich stets <em>prägnant</em> aus."},{w:"pragmatisch",f:"pragmatique",e:"Wir brauchen einen <em>pragmatischen</em> Ansatz."},{w:"differenziert",f:"nuancé",e:"Seine Analyse war sehr <em>differenziert</em>."},{w:"hinterfragen",f:"remettre en question",e:"Man sollte alles kritisch <em>hinterfragen</em>."},{w:"befürworten",f:"prôner / soutenir",e:"Ich <em>befürworte</em> diese Lösung."},{w:"berücksichtigen",f:"prendre en compte",e:"Wir müssen alle Faktoren <em>berücksichtigen</em>."},{w:"verdeutlichen",f:"clarifier / illustrer",e:"Lassen Sie mich das <em>verdeutlichen</em>."},{w:"abwägen",f:"peser le pour et le contre",e:"Man muss die Vor- und Nachteile <em>abwägen</em>."}],
+C1:[{w:"allgegenwärtig",f:"omniprésent",e:"Smartphones sind <em>allgegenwärtig</em>."},{w:"hochgradig",f:"hautement / fortement",e:"Das ist ein <em>hochgradig</em> komplexes Problem."},{w:"paradigmatisch",f:"paradigmatique",e:"Das ist ein <em>paradigmatischer</em> Wandel."},{w:"abschwächen",f:"atténuer / modérer",e:"Wir müssen die Auswirkungen <em>abschwächen</em>."},{w:"herbeiführen",f:"provoquer / entraîner",e:"Verhandlungen können eine Lösung <em>herbeiführen</em>."},{w:"aufzeigen",f:"montrer / mettre en évidence",e:"Die Studie <em>zeigt</em> klare Trends <em>auf</em>."},{w:"einher gehen",f:"aller de pair / s'accompagner",e:"Macht geht oft mit Verantwortung <em>einher</em>."},{w:"voraussetzen",f:"présupposer / exiger",e:"Das <em>setzt</em> ein hohes Niveau <em>voraus</em>."},{w:"verfestigen",f:"consolider / ancrer",e:"Diese Überzeugung hat sich <em>verfestigt</em>."},{w:"vergegenwärtigen",f:"se représenter / visualiser",e:"Man muss sich die Folgen <em>vergegenwärtigen</em>."}]
+};
+var TP={Wirtschaft:["Die Auswirkungen der Inflation auf die Mittelschicht","Digitale Währungen und Zentralbanken","Deglobalisierung und Reshoring"],Politik:["Die Zukunft der europäischen Souveränität","Populismus in modernen Demokratien","Wahlreform und demokratische Systeme"],Geopolitik:["Der Technologiestreit zwischen den USA und China","Energie als geopolitische Waffe","Afrika als geopolitischer Schwerpunkt"],Technologie:["KI-Regulierung: Europa gegen den Rest der Welt","Autonome Waffensysteme und Ethik","Quantencomputer und ihre realen Auswirkungen"],Sonstiges:["Philosophie der nachhaltigen Entwicklung","Sport und nationale Identität","Urbane Mobilität der Zukunft"]};
+(function(){var k=localStorage.getItem(GK);if(k){document.getElementById("ki").value=k;document.getElementById("ksm").innerHTML='<span class="saved">&#10003; Clé sauvegardée</span>';document.getElementById("clrbtn").style.display="inline-block";}})();
+function clearKey(){localStorage.removeItem(GK);document.getElementById("ki").value="";document.getElementById("ksm").innerHTML="";document.getElementById("clrbtn").style.display="none";}
+function showErr(m){document.getElementById("errbox").innerHTML='<div class="eb" style="margin-top:10px"><strong>Erreur:</strong> '+m+'</div>';}
+function showApiErr(m){document.getElementById("apierr").innerHTML='<div class="eb"><strong>Erreur API:</strong> '+m+'</div>';}
+function clearApiErr(){document.getElementById("apierr").innerHTML="";}
+function bSys(ws,h){var tq=h<14?"Was wirst du heute machen?":"Was hast du heute gemacht?";return "Du bist ARIA, eine Expertin für Deutschunterricht. Ziel: den Nutzer auf das Niveau "+cl+" bringen.\nÖFFNUNG: Frage \""+tq+"\" — wenn kein Thema, schlage vor: "+Object.keys(TP).join(", ")+" mit je 3 Themen: "+JSON.stringify(TP)+"\nVOKABELN: Der Nutzer muss diese 10 Wörter verwenden: ["+ws.join(", ")+"]. Feiere jeden Einsatz.\nKORREKTUREN: Nach JEDER Nachricht mit Fehlern:\n---CORRECTION---\nORIGINAL: [genau]\nCORRECTED: [korrigiert]\nREASON: [Erklärung auf Französisch]\n---END---\nMax 2. Weglassen wenn keine Fehler.\nNIVEAU: Alle 5 Nachrichten: ---LEVEL:XX---\nTON: Warm, neugierig, niemals herablassend. Antworte auf Deutsch, korrigiere auf Französisch.";}
+function initV(){var pool=VB[df]||VB["A2"];tw=pool.slice().sort(function(){return Math.random()-.5;}).slice(0,10);rnV();}
+function rnV(){var g=document.getElementById("vg");g.innerHTML="";tw.forEach(function(it,i){var d=document.createElement("div");d.className="vc"+(uw.has(it.w)?" used":"");d.id="v"+i;d.onclick=function(){this.classList.toggle("open");};d.innerHTML='<div class="vw">'+it.w+'</div><div class="vf">'+it.f+'</div><div class="vd">'+it.e+(uw.has(it.w)?'<br><span class="ub">utilisé</span>':"")+"</div>";g.appendChild(d);});document.getElementById("vc").textContent=uw.size+"/10 — double-clic sur un mot du chat";}
+function chW(t){var ch=false;tw.forEach(function(it){if(t.toLowerCase().indexOf(it.w.toLowerCase())>=0&&!uw.has(it.w)){uw.add(it.w);ch=true;}});if(ch){document.getElementById("sw").textContent=uw.size;rnV();updP();}}
+function updP(){var b=LP[cl]||20;document.getElementById("pf").style.width=Math.min(b+Math.min(Math.round(uw.size*2+tm*.3),20),99)+"%";}
+function logToday(){var today=new Date().toISOString().slice(0,10);if(!weekDays.includes(today)){weekDays.push(today);todayLogged=true;updDays();}}
+function updDays(){var dots=document.getElementById("day-dots");dots.innerHTML="";for(var i=0;i<7;i++){var sp=document.createElement("span");sp.className="day-dot "+(i<weekDays.length?"day-done":"day-miss");dots.appendChild(sp);}document.getElementById("day-count").textContent=weekDays.length+"/7 jours";document.getElementById("streak").textContent=weekDays.length;document.getElementById("week-lbl").textContent="Semaine "+weekNum;if(weekDays.length>=7)checkWeekComplete();}
+function checkWeekComplete(){var banner=document.getElementById("recap-banner");var allW=tw.slice();var usedW=tw.filter(function(i){return uw.has(i.w);});var recap={week:weekNum,date:new Date().toLocaleDateString(),days:weekDays.length,words:usedW,allWords:allW,corrections:cx.slice(),level:cl};recaps.push(recap);renderRecap(recap);banner.style.display="block";banner.innerHTML='<div class="recap"><strong>&#127881; Semaine '+weekNum+' terminée !</strong> '+weekDays.length+'/7 jours. Va dans l\'onglet "Récap semaine".</div>';saveAll();}
+function renderRecap(r){document.getElementById("wke").style.display="none";var c=document.getElementById("wkl");var d=document.createElement("div");d.className="card";var wH=r.words.map(function(w){return "<li><strong>"+w.w+"</strong> — "+w.f+" — <em>"+w.e.replace(/<[^>]+>/g,"")+"</em></li>";}).join("");var mH=r.allWords.filter(function(w){return !r.words.find(function(u){return u.w===w.w;});}).map(function(w){return "<li>"+w.w+" ("+w.f+")</li>";}).join("");d.innerHTML="<h3>Semaine "+r.week+" — "+r.date+"</h3><p style='font-size:13px;color:#6b6b6b;margin-bottom:8px'>"+r.days+"/7 jours | Niveau: "+r.level+" | "+r.words.length+" mots utilisés / "+r.allWords.length+"</p>"+(wH?"<p style='font-size:13px;font-weight:600;margin-bottom:4px'>Mots maîtrisés :</p><ul style='font-size:13px;padding-left:1.2rem;line-height:2'>"+wH+"</ul>":"")+(mH?"<p style='font-size:13px;font-weight:600;margin:8px 0 4px'>À retravailler :</p><ul style='font-size:13px;color:#6b6b6b;padding-left:1.2rem;line-height:1.8'>"+mH+"</ul>":"")+(r.corrections.length?"<p style='font-size:13px;font-weight:600;margin:8px 0 4px'>"+r.corrections.length+" corrections cette semaine</p>":"");c.insertBefore(d,c.firstChild);}
+function startApp(){document.getElementById("errbox").innerHTML="";var k=document.getElementById("ki").value.trim();if(!k||k.length<20){showErr("Entre ta clé Groq (console.groq.com → API Keys).");return;}ak=k;localStorage.setItem(GK,k);document.getElementById("ksm").innerHTML='<span class="saved">&#10003; Clé sauvegardée</span>';document.getElementById("clrbtn").style.display="inline-block";df=document.getElementById("ds").value;cl=df;document.getElementById("sc").style.display="none";document.getElementById("mn").style.display="block";document.getElementById("ll").textContent="Level: "+cl;initV();updDays();logToday();hs=[{role:"system",content:bSys(tw.map(function(i){return i.w;}),new Date().getHours())}];callA("Hello! Please start our session.",true);}
+async function callA(ut,si){clearApiErr();if(!si){chW(ut);addM("u",ut,null);tm++;document.getElementById("sm").textContent=tm;updP();logToday();}hs.push({role:"user",content:ut});shTy();document.getElementById("sts").innerHTML='<span class="dot"></span><span class="dot"></span><span class="dot"></span>';try{var res=await fetch("https://api.groq.com/openai/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+ak},body:JSON.stringify({model:"llama-3.3-70b-versatile",messages:hs,temperature:0.85,max_tokens:1024})});var data=await res.json();if(!res.ok||data.error){var em=data.error?data.error.message:"HTTP "+res.status;if(res.status===401)em="Clé invalide.";if(res.status===429)em="Quota dépassé, attends quelques secondes.";rmTy();showApiErr(em);document.getElementById("sts").textContent="";return;}var raw=data.choices[0].message.content;hs.push({role:"assistant",content:raw});var lm=raw.match(/---LEVEL:(\w+)---/);if(lm&&LV.indexOf(lm[1])>=0){cl=lm[1];document.getElementById("ll").textContent="Level: "+cl;updP();}raw=raw.replace(/---LEVEL:\w+---/g,"").trim();var mt=raw,ct=null;var cm=raw.match(/---CORRECTION---([\s\S]*?)---END---/);if(cm){ct=cm[1].trim();mt=raw.replace(/---CORRECTION---[\s\S]*?---END---/g,"").trim();var om=ct.match(/ORIGINAL:\s*(.+)/i),fm=ct.match(/CORRECTED:\s*(.+)/i),wm=ct.match(/REASON:\s*(.+)/i);if(om&&fm){var e={time:new Date().toLocaleTimeString(),original:om[1].trim(),corrected:fm[1].trim(),reason:wm?wm[1].trim():""};cx.push(e);document.getElementById("se").textContent=cx.length;addRE(e);}}rmTy();addM("a",mt,ct);document.getElementById("sts").textContent="";}catch(err){rmTy();showApiErr("Erreur réseau: "+err.message);document.getElementById("sts").textContent="";}}
+function addM(role,main,corr){var ms=document.getElementById("msgs");var dv=document.createElement("div");dv.className="msg "+role;var lb=document.createElement("span");lb.className="lbl";lb.textContent=role==="u"?"vous":"ARIA";var bb=document.createElement("div");bb.className="bub";bb.textContent=main;dv.appendChild(lb);dv.appendChild(bb);if(corr){var cb=document.createElement("div");cb.className="cb";cb.textContent=corr;dv.appendChild(cb);}ms.appendChild(dv);ms.scrollTop=ms.scrollHeight;var ts=new Date().toLocaleTimeString();tr.push({role:role,text:main,correction:corr||null,time:ts});updT();if(role==="a"&&spk)spkT(main);}
+function addRE(e){document.getElementById("re").style.display="none";var d=document.createElement("div");d.className="re";d.innerHTML='<div style="font-size:13px;color:#6b6b6b;margin-bottom:3px">Said: &quot;'+e.original+'&quot;</div><div style="font-size:14px;font-weight:600">Better: &quot;'+e.corrected+'&quot;</div>'+(e.reason?'<div style="font-size:12px;color:#9b9b9b;margin-top:3px">'+e.reason+'</div>':"");document.getElementById("rl").appendChild(d);}
+function updT(){var l=document.getElementById("tl");if(!tr.length)return;document.getElementById("te").style.display="none";l.innerHTML="";tr.forEach(function(m){if(m.role==="u"||m.role==="a"){var d=document.createElement("div");d.className="tl";d.innerHTML="<strong>"+(m.role==="u"?"Vous":"ARIA")+"</strong> <span style='font-size:11px;color:#9b9b9b'>"+m.time+"</span><br><span style='font-size:14px'>"+m.text+"</span>"+(m.correction?"<br><span style='font-size:12px;color:#78350F'>[correction: "+m.correction+"]</span>":"");l.appendChild(d);}});}
+function swTab(t,el){document.querySelectorAll(".tab").forEach(function(x){x.classList.remove("on");});el.classList.add("on");["cp","rp","tp","wkp"].forEach(function(id){document.getElementById(id).style.display="none";});var map={chat:"cp",rep:"rp",tr:"tp",recap:"wkp"};document.getElementById(map[t]).style.display="block";}
+function send(){var i=document.getElementById("inp");var t=i.value.trim();if(!t||!ak)return;i.value="";callA(t,false);}
+function hk(e){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}}
+function shTy(){var m=document.getElementById("msgs");var d=document.createElement("div");d.className="msg a";d.id="ty";d.innerHTML='<div class="bub"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>';m.appendChild(d);m.scrollTop=m.scrollHeight;}
+function rmTy(){var t=document.getElementById("ty");if(t)t.remove();}
+function spkT(t){if(!window.speechSynthesis||!spk)return;var u=new SpeechSynthesisUtterance(t.replace(/\n/g," "));u.lang="de-DE";u.rate=0.95;var vs=speechSynthesis.getVoices();var en=vs.find(function(v){return v.lang.startsWith("de")&&v.name.includes("Google");})||vs.find(function(v){return v.lang.startsWith("de");});if(en)u.voice=en;speechSynthesis.cancel();speechSynthesis.speak(u);}
+function togSpeak(){spk=!spk;document.getElementById("spb").textContent="&#128266; Voix: "+(spk?"on":"off");if(!spk)speechSynthesis.cancel();}
+function togMic(){if(!("webkitSpeechRecognition"in window)&&!("SpeechRecognition"in window)){alert("Utilise Chrome pour le micro.");return;}if(ir){rc.stop();return;}var SR=window.SpeechRecognition||window.webkitSpeechRecognition;rc=new SR();rc.lang="de-DE";rc.interimResults=false;rc.onstart=function(){ir=true;document.getElementById("mb").textContent="&#128308; Stop";};rc.onresult=function(e){document.getElementById("inp").value=e.results[0][0].transcript;send();};rc.onend=function(){ir=false;document.getElementById("mb").textContent="&#127897; Parler";};rc.start();}
+function saveAll(){localStorage.setItem(SK,JSON.stringify({hs:hs,tr:tr,cx:cx,uw:[...uw],tm:tm,cl:cl,tw:tw,df:df,recaps:recaps,weekDays:weekDays,weekNum:weekNum}));document.getElementById("sts").textContent="Sauvegardé.";setTimeout(function(){document.getElementById("sts").textContent="";},1500);}
+function loadAll(){var raw=localStorage.getItem(SK);if(!raw){document.getElementById("sts").textContent="Aucune sauvegarde.";return;}var d=JSON.parse(raw);hs=d.hs||[];tr=d.tr||[];cx=d.cx||[];uw=new Set(d.uw||[]);tm=d.tm||0;cl=d.cl||"A2";tw=d.tw||[];df=d.df||"A2";recaps=d.recaps||[];weekDays=d.weekDays||[];weekNum=d.weekNum||1;document.getElementById("sm").textContent=tm;document.getElementById("sw").textContent=uw.size;document.getElementById("se").textContent=cx.length;document.getElementById("ll").textContent="Level: "+cl;document.getElementById("msgs").innerHTML="";document.getElementById("rl").innerHTML="";tr.forEach(function(m){if(m.role==="u"||m.role==="a")addM(m.role,m.text,m.correction);});cx.forEach(addRE);recaps.forEach(renderRecap);rnV();updP();updDays();document.getElementById("sts").textContent="Chargé.";setTimeout(function(){document.getElementById("sts").textContent="";},1500);}
+function newDay(){if(!confirm("Nouvelle session ? Sauvegarde d'abord si besoin."))return;if(weekDays.length>=7){weekNum++;weekDays=[];uw=new Set();tw=[];}hs=[];tr=[];cx=[];tm=0;document.getElementById("msgs").innerHTML="";document.getElementById("rl").innerHTML="";document.getElementById("tl").innerHTML="";document.getElementById("sm").textContent=0;document.getElementById("sw").textContent=0;document.getElementById("se").textContent=0;document.getElementById("re").style.display="block";document.getElementById("te").style.display="block";document.getElementById("recap-banner").style.display="none";initV();logToday();updDays();hs=[{role:"system",content:bSys(tw.map(function(i){return i.w;}),new Date().getHours())}];callA("Hello! Please start our session.",true);}
+function dlRep(){var t="CORRECTIONS — "+new Date().toLocaleDateString()+"\n"+"=".repeat(40)+"\n\n";if(!cx.length)t+="Aucune correction.";else cx.forEach(function(e,i){t+=(i+1)+". ["+e.time+"]\n   Said: \""+e.original+"\"\n   Better: \""+e.corrected+"\"\n   Why: "+e.reason+"\n\n";});dlF("corrections.txt",t);}
+function dlTr(){var t="TRANSCRIPT — "+new Date().toLocaleDateString()+"\n"+"=".repeat(40)+"\n\n";tr.forEach(function(m){if(m.role==="u"||m.role==="a"){t+="["+m.time+"] "+(m.role==="u"?"VOUS":"ARIA")+": "+m.text+"\n";if(m.correction)t+="   [CORRECTION] "+m.correction+"\n";t+="\n";}});dlF("transcript.txt",t);}
+function dlRecap(){var t="RÉCAP — Semaine "+weekNum+"\n"+"=".repeat(40)+"\n\n";if(!recaps.length){t+="Aucun récap.";}else{recaps.forEach(function(r){t+="SEMAINE "+r.week+" ("+r.date+") — "+r.days+"/7 | Niveau: "+r.level+"\n\nMOTS MAÎTRISÉS:\n";r.words.forEach(function(w){t+="  - "+w.w+" : "+w.f+"\n    Exemple: "+w.e.replace(/<[^>]+>/g,"")+"\n";});t+="\nÀ RETRAVAILLER:\n";r.allWords.filter(function(w){return !r.words.find(function(u){return u.w===w.w;});}).forEach(function(w){t+="  - "+w.w+" ("+w.f+")\n";});t+="\nCORRECTIONS: "+r.corrections.length+"\n\n"+"=".repeat(40)+"\n\n";});}dlF("recap_s"+weekNum+".txt",t);}
+function dlF(n,t){var a=document.createElement("a");a.href="data:text/plain;charset=utf-8,"+encodeURIComponent(t);a.download=n;a.click();}
+window.speechSynthesis&&(window.speechSynthesis.onvoiceschanged=function(){});
+var tipCache={};
+document.addEventListener("dblclick",function(e){
+  var sel=window.getSelection().toString().trim().replace(/[^a-zA-ZÀ-ɏḀ-ỿäöüÄÖÜß-]/g,"");
+  if(!sel||sel.length<2||sel.length>40)return;
+  var tip=document.getElementById("tooltip");
+  tip.innerHTML='<span style="opacity:0.6">...</span>';
+  tip.style.display="block";
+  tip.style.left=Math.min(e.clientX+12,window.innerWidth-260)+"px";
+  tip.style.top=Math.min(e.clientY+12,window.innerHeight-120)+"px";
+  if(tipCache[sel.toLowerCase()]){tip.innerHTML=tipCache[sel.toLowerCase()];return;}
+  var found=null;
+  (tw||[]).forEach(function(w){if(w.w.toLowerCase()===sel.toLowerCase())found=w;});
+  if(found){
+    var html='<strong>'+found.w+'</strong><br>'+found.f+'<br><span style="font-size:11px;opacity:0.75">'+found.e.replace(/<[^>]+>/g,"")+'</span>';
+    tip.innerHTML=html;tipCache[sel.toLowerCase()]=html;
+  } else if(ak){
+    fetch("https://api.groq.com/openai/v1/chat/completions",{
+      method:"POST",
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+ak},
+      body:JSON.stringify({model:"llama-3.3-70b-versatile",messages:[{role:"user",content:"Traduis ce mot allemand en français. Réponds exactement dans ce format sur une ligne: MOT — traduction française — exemple: courte phrase en allemand. Mot: "+sel+". Reply ONLY the formatted line, nothing else."}],max_tokens:60,temperature:0.2})
+    }).then(function(r){return r.json();}).then(function(d){
+      if(d.choices&&d.choices[0]){
+        var txt=d.choices[0].message.content.trim();
+        var html=txt.replace(/\n/g,"<br>");
+        tip.innerHTML=html;tipCache[sel.toLowerCase()]=html;
+      }else{tip.style.display="none";}
+    }).catch(function(){tip.style.display="none";});
+  } else { tip.style.display="none"; }
+  clearTimeout(window._tipTimer);
+  window._tipTimer=setTimeout(function(){tip.style.display="none";},5000);
+});
+document.addEventListener("click",function(){document.getElementById("tooltip").style.display="none";clearTimeout(window._tipTimer);});
+</script>
+</body></html>
