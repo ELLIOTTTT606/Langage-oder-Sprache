@@ -164,25 +164,24 @@ document.addEventListener("click",function(){
 },true);
 
 function spkT(text){
-  if(!spk||!window.speechSynthesis)return;
-  window.speechSynthesis.cancel();
-  var doSpeak=function(){
-    var clean=text.replace(/\n/g," ").replace(/[*_~`#>]/g,"").substring(0,500);
-    var u=new SpeechSynthesisUtterance(clean);
-    u.lang="de-DE";u.rate=0.92;u.pitch=1;u.volume=1;
-    var vs=window.speechSynthesis.getVoices();
-    var v=vs.find(function(x){return x.lang==="de-DE"&&x.name.indexOf("Google")>=0;})
-      ||vs.find(function(x){return x.lang==="de-DE";})
-      ||vs.find(function(x){return x.lang.startsWith("de")&&x.name.indexOf("Google")>=0;})
-      ||vs.find(function(x){return x.lang.startsWith("de");});
-    if(v)u.voice=v;
-    u.onerror=function(e){console.warn("TTS:",e.error);};
-    window.speechSynthesis.speak(u);
-  };
-  var vs=window.speechSynthesis.getVoices();
-  if(vs.length>0){doSpeak();}
-  else{window.speechSynthesis.onvoiceschanged=function(){window.speechSynthesis.onvoiceschanged=null;doSpeak();};}
+  if(!spk||!ak)return;
+  var clean=text.replace(/\n/g," ").replace(/[*_~`#>]/g,"").substring(0,500);
+  fetch("https://api.groq.com/openai/v1/audio/speech",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","Authorization":"Bearer "+ak},
+    body:JSON.stringify({model:"playai-tts",input:clean,voice:"Florian",response_format:"mp3"})
+  })
+  .then(function(r){return r.arrayBuffer();})
+  .then(function(buf){
+    var blob=new Blob([buf],{type:"audio/mpeg"});
+    var url=URL.createObjectURL(blob);
+    if(window._ariaAudio){window._ariaAudio.pause();URL.revokeObjectURL(window._ariaAudio.src);}
+    window._ariaAudio=new Audio(url);
+    window._ariaAudio.play();
+  })
+  .catch(function(e){console.warn("TTS error:",e);});
 }
+doSpeak();};}
 function togSpeak(){spk=!spk;document.getElementById("spb").textContent="🔊 Voix: "+(spk?"on":"off");if(!spk)window.speechSynthesis.cancel();}
 
 function bSys(ws,h){var tq=h<14?"Was wirst du heute machen?":"Was hast du heute gemacht?";return "Du bist ARIA, Deutschlehrerin. Ziel: Niveau "+cl+".\nÖFFNUNG: Frage \""+tq+"\" — wenn kein Thema: "+Object.keys(TP).join(", ")+" mit 3 Themen: "+JSON.stringify(TP)+"\nVOKABELN: Nutzer muss diese 10 Wörter verwenden: ["+ws.join(", ")+"].\nKORREKTUREN: Nach JEDER Nachricht mit Fehlern:\n---CORRECTION---\nORIGINAL: [genau]\nCORRECTED: [korrigiert]\nREASON: [Erklärung auf Französisch]\n---END---\nMax 2. Weglassen wenn keine Fehler.\nNIVEAU: Alle 5 Nachrichten: ---LEVEL:XX---\nTON: Warm, neugierig. Antworte auf Deutsch, korrigiere auf Französisch.";}
