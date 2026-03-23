@@ -43,21 +43,19 @@ textarea{resize:none;margin:0}input:focus,select:focus,textarea:focus{outline:2p
 #tooltip{position:fixed;background:#1a1a1a;color:#fff;padding:8px 14px;border-radius:10px;font-size:13px;pointer-events:none;display:none;z-index:9999;max-width:240px;text-align:center;line-height:1.6;border:1px solid #333}
 .flashcard-area{display:flex;flex-direction:column;align-items:center;padding:1rem 0;min-height:340px}
 .fc-counter{font-size:13px;color:#6b6b6b;margin-bottom:12px}
-.fc-wrap{width:300px;height:200px;perspective:1000px;cursor:pointer;position:relative;margin-bottom:16px}
+.fc-wrap{width:300px;height:200px;perspective:1000px;cursor:pointer;position:relative;margin-bottom:16px;touch-action:none}
 .fc-inner{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform 0.5s}
 .fc-wrap.flipped .fc-inner{transform:rotateY(180deg)}
 .fc-front,.fc-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center}
 .fc-front{background:#2b2b2b;color:#fff}.fc-back{background:#fff;border:2px solid #2b2b2b;transform:rotateY(180deg)}
 .fc-word{font-size:22px;font-weight:700;margin-bottom:6px}
-.fc-level{font-size:11px;opacity:0.75;background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:20px}
+.fc-level{font-size:11px;opacity:0.75;background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:20px;margin-bottom:4px}
 .fc-trad{font-size:18px;font-weight:600;color:#2b2b2b;margin-bottom:8px}
 .fc-ex{font-size:13px;color:#6b6b6b;line-height:1.5}.fc-ex em{color:#444;font-style:normal;font-weight:600}
 .fc-hint{font-size:12px;color:rgba(255,255,255,0.7);margin-top:8px}
 .fc-actions{display:flex;gap:12px;margin-top:8px}
 .fc-btn{padding:8px 20px;border-radius:20px;border:none;cursor:pointer;font-size:13px;font-family:inherit;font-weight:600}
-.fc-again{background:#FEE2E2;color:#991B1B}.fc-again:hover{background:#FCA5A5}
-.fc-ok{background:#DCFCE7;color:#166534}.fc-ok:hover{background:#86EFAC}
-.fc-archive{background:#f5f5f4;color:#6b6b6b;border:1px solid #e5e5e3}.fc-archive:hover{background:#e5e5e3}
+.fc-again{background:#FEE2E2;color:#991B1B}.fc-ok{background:#DCFCE7;color:#166534}.fc-archive{background:#f5f5f4;color:#6b6b6b;border:1px solid #e5e5e3}
 .fc-stats{display:flex;gap:16px;font-size:13px;color:#6b6b6b;margin-top:12px}
 .fc-empty{text-align:center;padding:2rem;color:#6b6b6b;font-size:14px}
 .fc-done{text-align:center;padding:2rem}.fc-done h3{font-size:18px;margin-bottom:8px}.fc-done p{font-size:14px;color:#6b6b6b;margin-bottom:16px}
@@ -65,7 +63,10 @@ textarea{resize:none;margin:0}input:focus,select:focus,textarea:focus{outline:2p
 .archived-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#f5f5f4;border-radius:8px;margin-bottom:6px;font-size:13px}
 .archived-item .aw{font-weight:600}.archived-item .af{color:#6b6b6b}
 .restore-btn{font-size:11px;padding:3px 8px;border-radius:12px;border:1px solid #d1d1ce;background:#fff;cursor:pointer;color:#6b6b6b}
+.mode-btn{padding:6px 14px;font-size:12px;border-radius:20px;border:1px solid #d1d1ce;cursor:pointer;font-family:inherit;background:#fff;color:#6b6b6b}
+.mode-btn.active{background:#2b2b2b;color:#fff;border-color:#2b2b2b}
 </style></head><body><div id="app">
+
 <div id="sc" class="card">
 <h1>🇩🇪 Deutsch Akademie</h1>
 <p class="sub" style="margin-top:4px">Groq + Llama 3 — gratuit. Double-clic sur un mot pour le traduire.</p>
@@ -73,18 +74,18 @@ textarea{resize:none;margin:0}input:focus,select:focus,textarea:focus{outline:2p
 <label>Groq API key (console.groq.com → API Keys)</label>
 <input type="password" id="ki" placeholder="gsk_..." autocomplete="off">
 <label>Difficulté</label>
-<select id="ds">
-<option value="A1">A1</option><option value="A2" selected>A2</option><option value="B1">B1</option><option value="B2">B2</option><option value="C1">C1</option>
-</select>
+<select id="ds"><option value="A1">A1</option><option value="A2" selected>A2</option><option value="B1">B1</option><option value="B2">B2</option><option value="C1">C1</option></select>
 <div class="row"><button class="btn ac" onclick="startApp()">Démarrer</button><button class="btn sm" onclick="clearKey()" id="clrbtn" style="display:none">Changer de clé</button></div>
-<div id="errbox"></div></div>
+<div id="errbox"></div>
+</div>
 
 <div id="mn" style="display:none">
 <div class="card">
 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:13px;font-weight:600" id="ll">Level: A2</span><span style="font-size:12px;color:#6b6b6b" id="week-lbl">Semaine 1</span></div>
 <div class="pb"><div class="pf" id="pf" style="width:20%"></div></div>
 <div style="margin-top:8px;display:flex;align-items:center;gap:6px"><span style="font-size:12px;color:#6b6b6b">Cette semaine :</span><div id="day-dots"></div><span style="font-size:12px;color:#6b6b6b" id="day-count">0/7 jours</span></div>
-<div class="sg"><div class="st"><div class="sv" id="sw">0</div><div class="sl">mots utilisés</div></div><div class="st"><div class="sv" id="sm">0</div><div class="sl">messages</div></div><div class="st"><div class="sv" id="se">0</div><div class="sl">corrections</div></div><div class="st"><div class="sv" id="streak">0</div><div class="sl">jours consécutifs</div></div></div></div>
+<div class="sg"><div class="st"><div class="sv" id="sw">0</div><div class="sl">mots utilisés</div></div><div class="st"><div class="sv" id="sm">0</div><div class="sl">messages</div></div><div class="st"><div class="sv" id="se">0</div><div class="sl">corrections</div></div><div class="st"><div class="sv" id="streak">0</div><div class="sl">jours consécutifs</div></div></div>
+</div>
 
 <div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px"><span style="font-size:13px;font-weight:600">10 mots du jour</span><span id="vc" style="font-size:12px;color:#6b6b6b">0/10</span></div><div class="vg" id="vg"></div></div>
 <div id="recap-banner" style="display:none"></div>
@@ -100,19 +101,28 @@ textarea{resize:none;margin:0}input:focus,select:focus,textarea:focus{outline:2p
 <div class="card" id="cp">
 <div id="msgs"></div><p class="sts" id="sts"></p><div id="apierr"></div><hr class="sep">
 <div class="ir"><button class="btn sm" id="mb" onclick="togMic()">🎙 Sprechen</button><textarea id="inp" placeholder="Tippe oder sprich..." onkeydown="hk(event)" rows="2"></textarea><button class="btn ac sm" onclick="send()">Senden</button></div>
-<div class="row" style="margin-top:8px;justify-content:space-between"><div class="row"><button class="btn sm" onclick="togSpeak()" id="spb">🔊 Voix: on</button><button class="btn sm" onclick="saveAll()">💾 Sauver</button><button class="btn sm" onclick="loadAll()">📂 Charger</button></div><button class="btn sm" onclick="newDay()">Neue Sitzung</button></div>
+<div class="row" style="margin-top:8px;justify-content:space-between">
+<div class="row"><button class="btn sm" onclick="togSpeak()" id="spb">🔊 Voix: on</button><button class="btn sm" onclick="saveAll()">💾 Sauver</button><button class="btn sm" onclick="loadAll()">📂 Charger</button></div>
+<button class="btn sm" onclick="newDay()">Neue Sitzung</button>
+</div>
 </div>
 
 <div class="card" id="vp" style="display:none">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px">
 <h3>Vokabelkarten</h3>
-<div class="row"><button class="btn sm" onclick="shuffleCards()">🔀 Mischen</button><button class="btn sm" onclick="resetCards()">🔄 Reset</button></div>
+<div class="row">
+<button class="mode-btn active" id="btn-daily" onclick="setMode('daily')">10 du jour</button>
+<button class="mode-btn" id="btn-full" onclick="setMode('full')">Tout le vocab</button>
+<button class="btn sm" onclick="shuffleCards()">🔀</button>
+<button class="btn sm" onclick="resetCards()">🔄</button>
+</div>
 </div>
 <div class="flashcard-area" id="fc-area"></div>
 <div style="margin-top:16px;border-top:1px solid #e5e5e3;padding-top:12px">
-<p style="font-size:13px;font-weight:600;margin-bottom:8px">Archivierte Wörter (<span id="arch-count">0</span>)</p>
+<p style="font-size:13px;font-weight:600;margin-bottom:8px">Archiviert (<span id="arch-count">0</span>)</p>
 <div class="archived-list" id="arch-list"></div>
-</div></div>
+</div>
+</div>
 
 <div class="card" id="rp" style="display:none"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3>Corrections</h3><button class="btn sm" onclick="dlRep()">Download .txt</button></div><p class="sub" id="re">Aucune correction pour l'instant.</p><div id="rl"></div></div>
 <div class="card" id="tp" style="display:none"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><h3>Transcript</h3><button class="btn sm" onclick="dlTr()">Download .txt</button></div><p class="sub" id="te">Aucun message.</p><div id="tl"></div></div>
@@ -126,8 +136,8 @@ var ak="",df="A2",hs=[],spk=true,uw=new Set(),tm=0,rc=null,ir=false,cl="A2",cx=[
 var recaps=[],weekDays=[],weekNum=1,todayLogged=false;
 var LV=["A1","A2","B1","B2","C1","C2"],LP={A1:5,A2:20,B1:35,B2:55,C1:75,C2:95};
 var SK="aria_de",GK="aria_groq_key_de";
-var fcDeck=[],fcArchived=[],fcIdx=0,fcFlipped=false;
-var tipCache={},synthReady=false;
+var fcDeck=[],fcArchived=[],fcIdx=0,fcFlipped=false,fcMode="daily";
+var tipCache={},audioUnlocked=false;
 
 var VB={
 A1:[{w:"hallo",f:"bonjour",e:"<em>Hallo</em>! Wie geht es dir?"},{w:"danke",f:"merci",e:"<em>Danke</em> schön!"},{w:"bitte",f:"s'il vous plaît",e:"<em>Bitte</em> helfen Sie mir."},{w:"ja",f:"oui",e:"<em>Ja</em>, das stimmt."},{w:"nein",f:"non",e:"<em>Nein</em>, das ist falsch."},{w:"gut",f:"bien",e:"Es geht mir <em>gut</em>."},{w:"sprechen",f:"parler",e:"Ich kann Deutsch <em>sprechen</em>."},{w:"verstehen",f:"comprendre",e:"Ich <em>verstehe</em> nicht."},{w:"kommen",f:"venir",e:"Ich <em>komme</em> aus Frankreich."},{w:"gehen",f:"aller",e:"Wohin <em>gehst</em> du?"}],
@@ -145,6 +155,36 @@ function showErr(m){document.getElementById("errbox").innerHTML='<div class="eb"
 function showApiErr(m){document.getElementById("apierr").innerHTML='<div class="eb"><strong>Erreur API:</strong> '+m+'</div>';}
 function clearApiErr(){document.getElementById("apierr").innerHTML="";}
 
+document.addEventListener("click",function(){
+  if(!audioUnlocked&&window.speechSynthesis){
+    var u=new SpeechSynthesisUtterance("");
+    window.speechSynthesis.speak(u);
+    audioUnlocked=true;
+  }
+},true);
+
+function spkT(text){
+  if(!spk||!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  var doSpeak=function(){
+    var clean=text.replace(/\n/g," ").replace(/[*_~`#>]/g,"").substring(0,500);
+    var u=new SpeechSynthesisUtterance(clean);
+    u.lang="de-DE";u.rate=0.92;u.pitch=1;u.volume=1;
+    var vs=window.speechSynthesis.getVoices();
+    var v=vs.find(function(x){return x.lang==="de-DE"&&x.name.indexOf("Google")>=0;})
+      ||vs.find(function(x){return x.lang==="de-DE";})
+      ||vs.find(function(x){return x.lang.startsWith("de")&&x.name.indexOf("Google")>=0;})
+      ||vs.find(function(x){return x.lang.startsWith("de");});
+    if(v)u.voice=v;
+    u.onerror=function(e){console.warn("TTS:",e.error);};
+    window.speechSynthesis.speak(u);
+  };
+  var vs=window.speechSynthesis.getVoices();
+  if(vs.length>0){doSpeak();}
+  else{window.speechSynthesis.onvoiceschanged=function(){window.speechSynthesis.onvoiceschanged=null;doSpeak();};}
+}
+function togSpeak(){spk=!spk;document.getElementById("spb").textContent="🔊 Voix: "+(spk?"on":"off");if(!spk)window.speechSynthesis.cancel();}
+
 function bSys(ws,h){var tq=h<14?"Was wirst du heute machen?":"Was hast du heute gemacht?";return "Du bist ARIA, Deutschlehrerin. Ziel: Niveau "+cl+".\nÖFFNUNG: Frage \""+tq+"\" — wenn kein Thema: "+Object.keys(TP).join(", ")+" mit 3 Themen: "+JSON.stringify(TP)+"\nVOKABELN: Nutzer muss diese 10 Wörter verwenden: ["+ws.join(", ")+"].\nKORREKTUREN: Nach JEDER Nachricht mit Fehlern:\n---CORRECTION---\nORIGINAL: [genau]\nCORRECTED: [korrigiert]\nREASON: [Erklärung auf Französisch]\n---END---\nMax 2. Weglassen wenn keine Fehler.\nNIVEAU: Alle 5 Nachrichten: ---LEVEL:XX---\nTON: Warm, neugierig. Antworte auf Deutsch, korrigiere auf Französisch.";}
 
 function initV(){var pool=VB[df]||VB["A2"];tw=pool.slice().sort(function(){return Math.random()-.5;}).slice(0,10);rnV();initFlashcards();}
@@ -156,21 +196,42 @@ function updDays(){var dots=document.getElementById("day-dots");dots.innerHTML="
 function checkWeekComplete(){var banner=document.getElementById("recap-banner");var allW=tw.slice();var usedW=tw.filter(function(i){return uw.has(i.w);});var recap={week:weekNum,date:new Date().toLocaleDateString(),days:weekDays.length,words:usedW,allWords:allW,corrections:cx.slice(),level:cl};recaps.push(recap);renderRecap(recap);banner.style.display="block";banner.innerHTML='<div class="recap"><strong>🎉 Semaine '+weekNum+' terminée !</strong> '+weekDays.length+'/7 jours.</div>';saveAll();}
 function renderRecap(r){document.getElementById("wke").style.display="none";var c=document.getElementById("wkl");var d=document.createElement("div");d.className="card";var wH=r.words.map(function(w){return "<li><strong>"+w.w+"</strong> — "+w.f+" — <em>"+w.e.replace(/<[^>]+>/g,"")+"</em></li>";}).join("");var mH=r.allWords.filter(function(w){return !r.words.find(function(u){return u.w===w.w;});}).map(function(w){return "<li>"+w.w+" ("+w.f+")</li>";}).join("");d.innerHTML="<h3>Semaine "+r.week+" — "+r.date+"</h3><p style='font-size:13px;color:#6b6b6b;margin-bottom:8px'>"+r.days+"/7 jours | Niveau: "+r.level+" | "+r.words.length+"/"+r.allWords.length+" mots</p>"+(wH?"<p style='font-size:13px;font-weight:600;margin-bottom:4px'>Mots maîtrisés:</p><ul style='font-size:13px;padding-left:1.2rem;line-height:2'>"+wH+"</ul>":"")+(mH?"<p style='font-size:13px;font-weight:600;margin:8px 0 4px'>À retravailler:</p><ul style='font-size:13px;color:#6b6b6b;padding-left:1.2rem;line-height:1.8'>"+mH+"</ul>":"")+(r.corrections.length?"<p style='font-size:13px;color:#6b6b6b;margin-top:8px'>"+r.corrections.length+" corrections</p>":"");c.insertBefore(d,c.firstChild);}
 
-function initFlashcards(){fcDeck=tw.slice();fcArchived=[];fcIdx=0;fcFlipped=false;renderFlashcard();}
+function buildFullBank(){
+  var bank=[];
+  Object.keys(VB).forEach(function(lvl){VB[lvl].forEach(function(w){bank.push({w:w.w,f:w.f,e:w.e,level:lvl});});});
+  return bank.sort(function(){return Math.random()-.5;});
+}
+
+function initFlashcards(){fcDeck=tw.slice().map(function(w){return {w:w.w,f:w.f,e:w.e,level:df};});fcArchived=[];fcIdx=0;fcFlipped=false;fcMode="daily";}
 function shuffleCards(){fcDeck=fcDeck.slice().sort(function(){return Math.random()-.5;});fcIdx=0;fcFlipped=false;renderFlashcard();}
-function resetCards(){fcDeck=tw.slice().concat(fcArchived.map(function(a){return a.word;}));fcArchived=[];fcIdx=0;fcFlipped=false;renderFlashcard();updArchive();}
+function resetCards(){
+  if(fcMode==="daily"){fcDeck=tw.slice().map(function(w){return {w:w.w,f:w.f,e:w.e,level:df};});}
+  else{fcDeck=buildFullBank();}
+  fcArchived=[];fcIdx=0;fcFlipped=false;renderFlashcard();updArchive();
+}
+function setMode(mode){
+  fcMode=mode;
+  document.getElementById("btn-daily").className="mode-btn"+(mode==="daily"?" active":"");
+  document.getElementById("btn-full").className="mode-btn"+(mode==="full"?" active":"");
+  if(mode==="daily"){fcDeck=tw.slice().map(function(w){return {w:w.w,f:w.f,e:w.e,level:df};});}
+  else{fcDeck=buildFullBank();}
+  fcArchived=[];fcIdx=0;fcFlipped=false;renderFlashcard();updArchive();
+}
+
 function renderFlashcard(){
   var area=document.getElementById("fc-area");
-  if(!fcDeck.length){area.innerHTML='<div class="fc-empty">Keine Karten. Reset drücken.</div>';return;}
-  if(fcIdx>=fcDeck.length){area.innerHTML='<div class="fc-done"><h3>🎉 Fertig!</h3><p>'+fcDeck.length+' Karten, '+fcArchived.length+' archiviert.</p><button class="btn ac" onclick="shuffleCards()">Nochmal</button></div>';return;}
+  if(!area)return;
+  if(!fcDeck.length){area.innerHTML='<div class="fc-empty">Keine Karten. 🔄 Reset drücken.</div>';return;}
+  if(fcIdx>=fcDeck.length){area.innerHTML='<div class="fc-done"><h3>🎉 Fertig!</h3><p>'+fcDeck.length+' Karten passiert.</p><button class="btn ac" onclick="shuffleCards()">Nochmal</button></div>';return;}
   var card=fcDeck[fcIdx];
+  var lvlBadge=card.level||df;
   area.innerHTML=
-    '<p class="fc-counter">'+(fcIdx+1)+'/'+fcDeck.length+'</p>'
-    +'<div class="fc-wrap" id="fcw" onclick="flipCard()">'
+    '<p class="fc-counter">'+(fcIdx+1)+' / '+fcDeck.length+(fcMode==="full"?' <span style="font-size:11px;background:#e5e5e3;padding:2px 6px;border-radius:10px;margin-left:4px">'+lvlBadge+'</span>':'')+'</p>'
+    +'<div class="fc-wrap" id="fcw">'
       +'<div class="fc-inner">'
         +'<div class="fc-front">'
           +'<div class="fc-word">'+card.w+'</div>'
-          +'<div class="fc-level">'+df+'</div>'
+          +'<div class="fc-level">'+lvlBadge+'</div>'
           +'<div class="fc-hint">Klicken für Übersetzung</div>'
         +'</div>'
         +'<div class="fc-back">'
@@ -184,40 +245,82 @@ function renderFlashcard(){
       +'<button class="fc-btn fc-ok" onclick="cardOk()">✓ Gewusst!</button>'
       +'<button class="fc-btn fc-archive" onclick="cardArchive()">💾 Archiv</button>'
     +'</div>'
-    +'<div class="fc-stats">'
-      +'<span>🔀 '+fcDeck.length+' übrig</span>'
-      +'<span>💾 '+fcArchived.length+' archiviert</span>'
-    +'</div>';
+    +'<div class="fc-stats"><span>📚 '+fcDeck.length+' übrig</span><span>💾 '+fcArchived.length+' archiviert</span></div>';
   fcFlipped=false;
   addSwipe(document.getElementById("fcw"));
 }
+
 function flipCard(){var w=document.getElementById("fcw");if(w){w.classList.toggle("flipped");fcFlipped=!fcFlipped;}}
 function cardOk(){fcIdx++;renderFlashcard();}
-function cardAgain(){var card=fcDeck.splice(fcIdx,1)[0];fcDeck.push(card);renderFlashcard();}
-function cardArchive(){var card=fcDeck.splice(fcIdx,1)[0];fcArchived.push({word:card,date:new Date().toLocaleDateString()});updArchive();renderFlashcard();}
+function cardAgain(){var c=fcDeck.splice(fcIdx,1)[0];fcDeck.push(c);renderFlashcard();}
+function cardArchive(){var c=fcDeck.splice(fcIdx,1)[0];fcArchived.push({word:c,date:new Date().toLocaleDateString()});updArchive();renderFlashcard();}
 function updArchive(){document.getElementById("arch-count").textContent=fcArchived.length;var list=document.getElementById("arch-list");list.innerHTML="";fcArchived.forEach(function(a,i){var d=document.createElement("div");d.className="archived-item";d.innerHTML='<span><span class="aw">'+a.word.w+'</span> <span class="af">— '+a.word.f+'</span></span><button class="restore-btn" onclick="restoreCard('+i+')">Restaurer</button>';list.appendChild(d);});}
 function restoreCard(i){var a=fcArchived.splice(i,1)[0];fcDeck.push(a.word);updArchive();renderFlashcard();}
 
 function addSwipe(el){
   if(!el)return;
   var startY=0,moved=false;
-  el.addEventListener("touchstart",function(e){startY=e.touches[0].clientY;moved=false;},{passive:true});
-  el.addEventListener("touchmove",function(e){var dy=e.touches[0].clientY-startY;if(Math.abs(dy)>10)moved=true;el.style.transform="translateY("+dy+"px)";},{passive:true});
-  el.addEventListener("touchend",function(e){var dy=e.changedTouches[0].clientY-startY;el.style.transform="";if(Math.abs(dy)<10&&!moved){flipCard();return;}if(dy<-60){cardOk();}else if(dy>60){cardAgain();}});
-  el.addEventListener("mousedown",function(e){startY=e.clientY;moved=false;});
-  window.addEventListener("mousemove",function(e){if(e.buttons===1&&el&&document.getElementById("fcw")){var dy=e.clientY-startY;if(Math.abs(dy)>5)moved=true;el.style.transform="translateY("+dy+"px)";}});
-  window.addEventListener("mouseup",function(e){if(!el||!document.getElementById("fcw"))return;var dy=e.clientY-startY;el.style.transform="";if(Math.abs(dy)<5&&!moved)return;if(dy<-60){cardOk();}else if(dy>60){cardAgain();}});
+  function onDown(y){startY=y;moved=false;}
+  function onMove(y,active){if(!active)return;var dy=y-startY;if(Math.abs(dy)>8)moved=true;el.style.transform="translateY("+dy+"px) rotate("+(dy*0.05)+"deg)";}
+  function onUp(y){var dy=y-startY;el.style.transform="";if(Math.abs(dy)<8&&!moved){flipCard();return;}if(dy<-60){el.style.transition="transform 0.2s";el.style.transform="translateY(-200px)";setTimeout(function(){el.style.transition="";cardOk();},180);}else if(dy>60){el.style.transition="transform 0.2s";el.style.transform="translateY(200px)";setTimeout(function(){el.style.transition="";cardAgain();},180);}}
+  el.addEventListener("touchstart",function(e){onDown(e.touches[0].clientY);},{passive:true});
+  el.addEventListener("touchmove",function(e){onMove(e.touches[0].clientY,true);e.preventDefault();},{passive:false});
+  el.addEventListener("touchend",function(e){onUp(e.changedTouches[0].clientY);});
+  el.addEventListener("mousedown",function(e){onDown(e.clientY);e.preventDefault();});
+  var _move=function(e){if(e.buttons===1)onMove(e.clientY,true);};
+  var _up=function(e){onUp(e.clientY);window.removeEventListener("mousemove",_move);window.removeEventListener("mouseup",_up);};
+  el.addEventListener("mousedown",function(){window.addEventListener("mousemove",_move);window.addEventListener("mouseup",_up);});
 }
 
-function initSynth(cb){if(synthReady){cb();return;}var vs=window.speechSynthesis.getVoices();if(vs.length>0){synthReady=true;cb();return;}window.speechSynthesis.onvoiceschanged=function(){synthReady=true;cb();};}
-function spkT(text){if(!spk)return;if(!window.speechSynthesis)return;window.speechSynthesis.cancel();initSynth(function(){var u=new SpeechSynthesisUtterance(text.replace(/\n/g," ").replace(/[*_~`]/g,""));u.lang="de-DE";u.rate=0.92;u.pitch=1;u.volume=1;var vs=window.speechSynthesis.getVoices();var v=vs.find(function(v){return v.lang==="de-DE"&&v.name.toLowerCase().indexOf("google")>=0;})||vs.find(function(v){return v.lang==="de-DE";})||vs.find(function(v){return v.lang.startsWith("de")&&v.name.toLowerCase().indexOf("google")>=0;})||vs.find(function(v){return v.lang.startsWith("de");});if(v)u.voice=v;u.onerror=function(e){console.log("TTS error",e);};window.speechSynthesis.speak(u);});}
-function togSpeak(){spk=!spk;document.getElementById("spb").textContent="🔊 Voix: "+(spk?"on":"off");if(!spk)window.speechSynthesis.cancel();}
+function startApp(){
+  document.getElementById("errbox").innerHTML="";
+  var k=document.getElementById("ki").value.trim();
+  if(!k||k.length<20){showErr("Entre ta clé Groq (console.groq.com → API Keys).");return;}
+  ak=k;localStorage.setItem(GK,k);
+  document.getElementById("ksm").innerHTML='<span class="saved">✓ Clé sauvegardée</span>';
+  document.getElementById("clrbtn").style.display="inline-block";
+  df=document.getElementById("ds").value;cl=df;
+  document.getElementById("sc").style.display="none";
+  document.getElementById("mn").style.display="block";
+  document.getElementById("ll").textContent="Level: "+cl;
+  initV();updDays();logToday();
+  hs=[{role:"system",content:bSys(tw.map(function(i){return i.w;}),new Date().getHours())}];
+  callA("Hallo! Bitte starte unsere Sitzung.",true);
+}
 
-function startApp(){document.getElementById("errbox").innerHTML="";var k=document.getElementById("ki").value.trim();if(!k||k.length<20){showErr("Entre ta clé Groq (console.groq.com → API Keys).");return;}ak=k;localStorage.setItem(GK,k);document.getElementById("ksm").innerHTML='<span class="saved">✓ Clé sauvegardée</span>';document.getElementById("clrbtn").style.display="inline-block";df=document.getElementById("ds").value;cl=df;document.getElementById("sc").style.display="none";document.getElementById("mn").style.display="block";document.getElementById("ll").textContent="Level: "+cl;initV();updDays();logToday();hs=[{role:"system",content:bSys(tw.map(function(i){return i.w;}),new Date().getHours())}];callA("Hallo! Bitte starte unsere Sitzung.",true);}
+async function callA(ut,si){
+  clearApiErr();
+  if(!si){chW(ut);addM("u",ut,null);tm++;document.getElementById("sm").textContent=tm;updP();logToday();}
+  hs.push({role:"user",content:ut});
+  shTy();document.getElementById("sts").innerHTML='<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+  try{
+    var res=await fetch("https://api.groq.com/openai/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+ak},body:JSON.stringify({model:"llama-3.3-70b-versatile",messages:hs,temperature:0.85,max_tokens:1024})});
+    var data=await res.json();
+    if(!res.ok||data.error){var em=data.error?data.error.message:"HTTP "+res.status;if(res.status===401)em="Clé invalide.";if(res.status===429)em="Quota dépassé.";rmTy();showApiErr(em);document.getElementById("sts").textContent="";return;}
+    var raw=data.choices[0].message.content;
+    hs.push({role:"assistant",content:raw});
+    var lm=raw.match(/---LEVEL:(\w+)---/);if(lm&&LV.indexOf(lm[1])>=0){cl=lm[1];document.getElementById("ll").textContent="Level: "+cl;updP();}
+    raw=raw.replace(/---LEVEL:\w+---/g,"").trim();
+    var mt=raw,ct=null;
+    var cm=raw.match(/---CORRECTION---([\s\S]*?)---END---/);
+    if(cm){ct=cm[1].trim();mt=raw.replace(/---CORRECTION---[\s\S]*?---END---/g,"").trim();var om=ct.match(/ORIGINAL:\s*(.+)/i),fm=ct.match(/CORRECTED:\s*(.+)/i),wm=ct.match(/REASON:\s*(.+)/i);if(om&&fm){var e={time:new Date().toLocaleTimeString(),original:om[1].trim(),corrected:fm[1].trim(),reason:wm?wm[1].trim():""};cx.push(e);document.getElementById("se").textContent=cx.length;addRE(e);}}
+    rmTy();addM("a",mt,ct);document.getElementById("sts").textContent="";
+  }catch(err){rmTy();showApiErr("Erreur réseau: "+err.message);document.getElementById("sts").textContent="";}
+}
 
-async function callA(ut,si){clearApiErr();if(!si){chW(ut);addM("u",ut,null);tm++;document.getElementById("sm").textContent=tm;updP();logToday();}hs.push({role:"user",content:ut});shTy();document.getElementById("sts").innerHTML='<span class="dot"></span><span class="dot"></span><span class="dot"></span>';try{var res=await fetch("https://api.groq.com/openai/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+ak},body:JSON.stringify({model:"llama-3.3-70b-versatile",messages:hs,temperature:0.85,max_tokens:1024})});var data=await res.json();if(!res.ok||data.error){var em=data.error?data.error.message:"HTTP "+res.status;if(res.status===401)em="Clé invalide.";if(res.status===429)em="Quota dépassé.";rmTy();showApiErr(em);document.getElementById("sts").textContent="";return;}var raw=data.choices[0].message.content;hs.push({role:"assistant",content:raw});var lm=raw.match(/---LEVEL:(\w+)---/);if(lm&&LV.indexOf(lm[1])>=0){cl=lm[1];document.getElementById("ll").textContent="Level: "+cl;updP();}raw=raw.replace(/---LEVEL:\w+---/g,"").trim();var mt=raw,ct=null;var cm=raw.match(/---CORRECTION---([\s\S]*?)---END---/);if(cm){ct=cm[1].trim();mt=raw.replace(/---CORRECTION---[\s\S]*?---END---/g,"").trim();var om=ct.match(/ORIGINAL:\s*(.+)/i),fm=ct.match(/CORRECTED:\s*(.+)/i),wm=ct.match(/REASON:\s*(.+)/i);if(om&&fm){var e={time:new Date().toLocaleTimeString(),original:om[1].trim(),corrected:fm[1].trim(),reason:wm?wm[1].trim():""};cx.push(e);document.getElementById("se").textContent=cx.length;addRE(e);}}rmTy();addM("a",mt,ct);document.getElementById("sts").textContent="";}catch(err){rmTy();showApiErr("Erreur réseau: "+err.message);document.getElementById("sts").textContent="";}}
-
-function addM(role,main,corr){var ms=document.getElementById("msgs");var dv=document.createElement("div");dv.className="msg "+role;var lb=document.createElement("span");lb.className="lbl";lb.textContent=role==="u"?"vous":"ARIA";var bb=document.createElement("div");bb.className="bub";bb.textContent=main;dv.appendChild(lb);dv.appendChild(bb);if(corr){var cb=document.createElement("div");cb.className="cb";cb.textContent=corr;dv.appendChild(cb);}ms.appendChild(dv);ms.scrollTop=ms.scrollHeight;var ts=new Date().toLocaleTimeString();tr.push({role:role,text:main,correction:corr||null,time:ts});updT();if(role==="a"&&spk){setTimeout(function(){spkT(main);},100);}}
+function addM(role,main,corr){
+  var ms=document.getElementById("msgs");
+  var dv=document.createElement("div");dv.className="msg "+role;
+  var lb=document.createElement("span");lb.className="lbl";lb.textContent=role==="u"?"vous":"ARIA";
+  var bb=document.createElement("div");bb.className="bub";bb.textContent=main;
+  dv.appendChild(lb);dv.appendChild(bb);
+  if(corr){var cb=document.createElement("div");cb.className="cb";cb.textContent=corr;dv.appendChild(cb);}
+  ms.appendChild(dv);ms.scrollTop=ms.scrollHeight;
+  var ts=new Date().toLocaleTimeString();
+  tr.push({role:role,text:main,correction:corr||null,time:ts});
+  updT();
+  if(role==="a"&&spk){setTimeout(function(){spkT(main);},200);}
+}
 function addRE(e){document.getElementById("re").style.display="none";var d=document.createElement("div");d.className="re";d.innerHTML='<div style="font-size:13px;color:#6b6b6b;margin-bottom:3px">Said: &quot;'+e.original+'&quot;</div><div style="font-size:14px;font-weight:600">Better: &quot;'+e.corrected+'&quot;</div>'+(e.reason?'<div style="font-size:12px;color:#9b9b9b;margin-top:3px">'+e.reason+'</div>':"");document.getElementById("rl").appendChild(d);}
 function updT(){var l=document.getElementById("tl");if(!tr.length)return;document.getElementById("te").style.display="none";l.innerHTML="";tr.forEach(function(m){if(m.role==="u"||m.role==="a"){var d=document.createElement("div");d.className="tl";d.innerHTML="<strong>"+(m.role==="u"?"Vous":"ARIA")+"</strong> <span style='font-size:11px;color:#9b9b9b'>"+m.time+"</span><br><span style='font-size:14px'>"+m.text+"</span>"+(m.correction?"<br><span style='font-size:12px;color:#78350F'>[correction: "+m.correction+"]</span>":"");l.appendChild(d);}});}
 function swTab(t,el){document.querySelectorAll(".tab").forEach(function(x){x.classList.remove("on");});el.classList.add("on");["cp","vp","rp","tp","wkp"].forEach(function(id){document.getElementById(id).style.display="none";});var map={chat:"cp",vocab:"vp",rep:"rp",tr:"tp",recap:"wkp"};document.getElementById(map[t]).style.display="block";if(t==="vocab")renderFlashcard();}
@@ -227,14 +330,34 @@ function shTy(){var m=document.getElementById("msgs");var d=document.createEleme
 function rmTy(){var t=document.getElementById("ty");if(t)t.remove();}
 function togMic(){if(!("webkitSpeechRecognition"in window)&&!("SpeechRecognition"in window)){alert("Utilise Chrome pour le micro.");return;}if(ir){rc.stop();return;}var SR=window.SpeechRecognition||window.webkitSpeechRecognition;rc=new SR();rc.lang="de-DE";rc.interimResults=false;rc.onstart=function(){ir=true;document.getElementById("mb").textContent="🔴 Stop";};rc.onresult=function(e){document.getElementById("inp").value=e.results[0][0].transcript;send();};rc.onend=function(){ir=false;document.getElementById("mb").textContent="🎙 Sprechen";};rc.start();}
 function saveAll(){localStorage.setItem(SK,JSON.stringify({hs:hs,tr:tr,cx:cx,uw:[...uw],tm:tm,cl:cl,tw:tw,df:df,recaps:recaps,weekDays:weekDays,weekNum:weekNum,fcArchived:fcArchived}));document.getElementById("sts").textContent="Sauvegardé.";setTimeout(function(){document.getElementById("sts").textContent="";},1500);}
-function loadAll(){var raw=localStorage.getItem(SK);if(!raw){document.getElementById("sts").textContent="Aucune sauvegarde.";return;}var d=JSON.parse(raw);hs=d.hs||[];tr=d.tr||[];cx=d.cx||[];uw=new Set(d.uw||[]);tm=d.tm||0;cl=d.cl||"A2";tw=d.tw||[];df=d.df||"A2";recaps=d.recaps||[];weekDays=d.weekDays||[];weekNum=d.weekNum||1;fcArchived=d.fcArchived||[];document.getElementById("sm").textContent=tm;document.getElementById("sw").textContent=uw.size;document.getElementById("se").textContent=cx.length;document.getElementById("ll").textContent="Level: "+cl;document.getElementById("msgs").innerHTML="";document.getElementById("rl").innerHTML="";tr.forEach(function(m){if(m.role==="u"||m.role==="a")addM(m.role,m.text,m.correction);});cx.forEach(addRE);recaps.forEach(renderRecap);rnV();updP();updDays();fcDeck=tw.slice();fcIdx=0;renderFlashcard();updArchive();document.getElementById("sts").textContent="Chargé.";setTimeout(function(){document.getElementById("sts").textContent="";},1500);}
+function loadAll(){var raw=localStorage.getItem(SK);if(!raw){document.getElementById("sts").textContent="Aucune sauvegarde.";return;}var d=JSON.parse(raw);hs=d.hs||[];tr=d.tr||[];cx=d.cx||[];uw=new Set(d.uw||[]);tm=d.tm||0;cl=d.cl||"A2";tw=d.tw||[];df=d.df||"A2";recaps=d.recaps||[];weekDays=d.weekDays||[];weekNum=d.weekNum||1;fcArchived=d.fcArchived||[];document.getElementById("sm").textContent=tm;document.getElementById("sw").textContent=uw.size;document.getElementById("se").textContent=cx.length;document.getElementById("ll").textContent="Level: "+cl;document.getElementById("msgs").innerHTML="";document.getElementById("rl").innerHTML="";tr.forEach(function(m){if(m.role==="u"||m.role==="a")addM(m.role,m.text,m.correction);});cx.forEach(addRE);recaps.forEach(renderRecap);rnV();updP();updDays();setMode(fcMode);document.getElementById("sts").textContent="Chargé.";setTimeout(function(){document.getElementById("sts").textContent="";},1500);}
 function newDay(){if(!confirm("Neue Sitzung?"))return;if(weekDays.length>=7){weekNum++;weekDays=[];uw=new Set();tw=[];}hs=[];tr=[];cx=[];tm=0;document.getElementById("msgs").innerHTML="";document.getElementById("rl").innerHTML="";document.getElementById("tl").innerHTML="";document.getElementById("sm").textContent=0;document.getElementById("sw").textContent=0;document.getElementById("se").textContent=0;document.getElementById("re").style.display="block";document.getElementById("te").style.display="block";document.getElementById("recap-banner").style.display="none";initV();logToday();updDays();hs=[{role:"system",content:bSys(tw.map(function(i){return i.w;}),new Date().getHours())}];callA("Hallo! Bitte starte unsere Sitzung.",true);}
 function dlRep(){var t="CORRECTIONS — "+new Date().toLocaleDateString()+"\n"+"=".repeat(40)+"\n\n";if(!cx.length)t+="Aucune correction.";else cx.forEach(function(e,i){t+=(i+1)+". ["+e.time+"]\n   Said: \""+e.original+"\"\n   Better: \""+e.corrected+"\"\n   Why: "+e.reason+"\n\n";});dlF("corrections.txt",t);}
 function dlTr(){var t="TRANSCRIPT — "+new Date().toLocaleDateString()+"\n"+"=".repeat(40)+"\n\n";tr.forEach(function(m){if(m.role==="u"||m.role==="a"){t+="["+m.time+"] "+(m.role==="u"?"VOUS":"ARIA")+": "+m.text+"\n";if(m.correction)t+="   [CORRECTION] "+m.correction+"\n";t+="\n";}});dlF("transcript.txt",t);}
 function dlRecap(){var t="RÉCAP — S"+weekNum+"\n"+"=".repeat(40)+"\n\n";if(!recaps.length)t+="Aucun récap.";else recaps.forEach(function(r){t+="SEMAINE "+r.week+" ("+r.date+") — "+r.days+"/7 | "+r.level+"\n\nMOTS MAÎTRISÉS:\n";r.words.forEach(function(w){t+="  - "+w.w+" : "+w.f+"\n    Exemple: "+w.e.replace(/<[^>]+>/g,"")+"\n";});t+="\nÀ RETRAVAILLER:\n";r.allWords.filter(function(w){return !r.words.find(function(u){return u.w===w.w;});}).forEach(function(w){t+="  - "+w.w+" ("+w.f+")\n";});t+="\n"+"=".repeat(40)+"\n\n";});dlF("recap_s"+weekNum+".txt",t);}
 function dlF(n,t){var a=document.createElement("a");a.href="data:text/plain;charset=utf-8,"+encodeURIComponent(t);a.download=n;a.click();}
 
-document.addEventListener("dblclick",function(e){var sel=window.getSelection().toString().trim().replace(/[^a-zA-ZÀ-ÿäöüÄÖÜß]/g,"");if(!sel||sel.length<2||sel.length>40)return;var tip=document.getElementById("tooltip");tip.innerHTML='<span style="opacity:0.6">...</span>';tip.style.display="block";tip.style.left=Math.min(e.clientX+12,window.innerWidth-260)+"px";tip.style.top=Math.min(e.clientY+12,window.innerHeight-120)+"px";if(tipCache[sel.toLowerCase()]){tip.innerHTML=tipCache[sel.toLowerCase()];return;}var found=null;(tw||[]).forEach(function(w){if(w.w.toLowerCase()===sel.toLowerCase())found=w;});if(found){var h='<strong>'+found.w+'</strong><br>'+found.f+'<br><span style="font-size:11px;opacity:0.75">'+found.e.replace(/<[^>]+>/g,"")+'</span>';tip.innerHTML=h;tipCache[sel.toLowerCase()]=h;}else if(ak){fetch("https://api.groq.com/openai/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+ak},body:JSON.stringify({model:"llama-3.3-70b-versatile",messages:[{role:"user",content:"Traduis ce mot allemand en français. Format exact sur une ligne: MOT — traduction française — exemple: courte phrase en allemand. Mot: "+sel+". Réponds UNIQUEMENT la ligne formatée."}],max_tokens:60,temperature:0.1})}).then(function(r){return r.json();}).then(function(d){if(d.choices&&d.choices[0]){var h=d.choices[0].message.content.trim().replace(/\n/g,"<br>");tip.innerHTML=h;tipCache[sel.toLowerCase()]=h;}else{tip.style.display="none";}}).catch(function(){tip.style.display="none";});}else{tip.style.display="none";}clearTimeout(window._tipTimer);window._tipTimer=setTimeout(function(){tip.style.display="none";},5000);});
-document.addEventListener("click",function(){document.getElementById("tooltip").style.display="none";clearTimeout(window._tipTimer);});
+document.addEventListener("dblclick",function(e){
+  var sel=window.getSelection().toString().trim().replace(/[^a-zA-ZÀ-ÿäöüÄÖÜß]/g,"");
+  if(!sel||sel.length<2||sel.length>40)return;
+  var tip=document.getElementById("tooltip");
+  tip.innerHTML='<span style="opacity:0.6">...</span>';tip.style.display="block";
+  tip.style.left=Math.min(e.clientX+12,window.innerWidth-260)+"px";
+  tip.style.top=Math.min(e.clientY+12,window.innerHeight-120)+"px";
+  if(tipCache[sel.toLowerCase()]){tip.innerHTML=tipCache[sel.toLowerCase()];return;}
+  var found=null;
+  var allW=buildFullBank();
+  allW.forEach(function(w){if(w.w.toLowerCase()===sel.toLowerCase())found=w;});
+  if(found){
+    var h='<strong>'+found.w+'</strong><br>'+found.f+'<br><span style="font-size:11px;opacity:0.75">'+found.e.replace(/<[^>]+>/g,"")+'</span>';
+    tip.innerHTML=h;tipCache[sel.toLowerCase()]=h;
+  } else if(ak){
+    fetch("https://api.groq.com/openai/v1/chat/completions",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+ak},body:JSON.stringify({model:"llama-3.3-70b-versatile",messages:[{role:"user",content:"Traduis ce mot allemand en français. Format exact sur une ligne: MOT — traduction française — exemple: courte phrase en allemand. Mot: "+sel+". Réponds UNIQUEMENT la ligne formatée."}],max_tokens:60,temperature:0.1})})
+    .then(function(r){return r.json();}).then(function(d){if(d.choices&&d.choices[0]){var h=d.choices[0].message.content.trim().replace(/\n/g,"<br>");tip.innerHTML=h;tipCache[sel.toLowerCase()]=h;}else{tip.style.display="none";}})
+    .catch(function(){tip.style.display="none";});
+  } else {tip.style.display="none";}
+  clearTimeout(window._tipTimer);window._tipTimer=setTimeout(function(){tip.style.display="none";},5000);
+});
+document.addEventListener("click",function(e){if(!e.target.closest("#tooltip")){document.getElementById("tooltip").style.display="none";clearTimeout(window._tipTimer);}});
 </script>
 </body></html>
