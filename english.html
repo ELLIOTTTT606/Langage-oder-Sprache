@@ -164,24 +164,22 @@ document.addEventListener("click",function(){
 },true);
 
 function spkT(text){
-  if(!spk||!window.speechSynthesis)return;
-  window.speechSynthesis.cancel();
-  var doSpeak=function(){
-    var clean=text.replace(/\n/g," ").replace(/[*_~`#>]/g,"").substring(0,500);
-    var u=new SpeechSynthesisUtterance(clean);
-    u.lang="en-US";u.rate=0.92;u.pitch=1;u.volume=1;
-    var vs=window.speechSynthesis.getVoices();
-    var v=vs.find(function(x){return x.lang==="en-US"&&x.name.indexOf("Google")>=0;})
-      ||vs.find(function(x){return x.lang==="en-US";})
-      ||vs.find(function(x){return x.lang.startsWith("en")&&x.name.indexOf("Google")>=0;})
-      ||vs.find(function(x){return x.lang.startsWith("en");});
-    if(v)u.voice=v;
-    u.onerror=function(e){console.warn("TTS:",e.error);};
-    window.speechSynthesis.speak(u);
-  };
-  var vs=window.speechSynthesis.getVoices();
-  if(vs.length>0){doSpeak();}
-  else{window.speechSynthesis.onvoiceschanged=function(){window.speechSynthesis.onvoiceschanged=null;doSpeak();};}
+  if(!spk||!ak)return;
+  var clean=text.replace(/\n/g," ").replace(/[*_~`#>]/g,"").substring(0,500);
+  fetch("https://api.groq.com/openai/v1/audio/speech",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","Authorization":"Bearer "+ak},
+    body:JSON.stringify({model:"playai-tts",input:clean,voice:"Nia",response_format:"mp3"})
+  })
+  .then(function(r){return r.arrayBuffer();})
+  .then(function(buf){
+    var blob=new Blob([buf],{type:"audio/mpeg"});
+    var url=URL.createObjectURL(blob);
+    if(window._ariaAudio){window._ariaAudio.pause();URL.revokeObjectURL(window._ariaAudio.src);}
+    window._ariaAudio=new Audio(url);
+    window._ariaAudio.play();
+  })
+  .catch(function(e){console.warn("TTS error:",e);});
 }
 function togSpeak(){spk=!spk;document.getElementById("spb").textContent="🔊 Voix: "+(spk?"on":"off");if(!spk)window.speechSynthesis.cancel();}
 
